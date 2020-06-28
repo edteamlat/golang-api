@@ -3,6 +3,8 @@ package middleware
 import (
 	"log"
 	"net/http"
+
+	"github.com/EDteam/golang-api/clase-3/authorization"
 )
 
 // Log .
@@ -17,7 +19,8 @@ func Log(f func(http.ResponseWriter, *http.Request)) func(http.ResponseWriter, *
 func Authentication(f func(http.ResponseWriter, *http.Request)) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		token := r.Header.Get("Authorization")
-		if token != "un-token-muy-seguro" {
+		_, err := authorization.ValidateToken(token)
+		if err != nil {
 			forbidden(w, r)
 			return
 		}
